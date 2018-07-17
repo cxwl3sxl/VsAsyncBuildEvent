@@ -1,0 +1,32 @@
+﻿<Window x:Class="VsAsyncBuildEvent.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VsAsyncBuildEvent"
+        mc:Ignorable="d"
+        Title="VS异步命令管理器" Icon="main.ico" Loaded="MainWindow_OnLoaded" Height="280" Width="500" Closing="MainWindow_OnClosing" Closed="MainWindow_OnClosed">
+    <Window.Resources>
+        <local:MainModelResover x:Key="MainModelResover"></local:MainModelResover>
+    </Window.Resources>
+    <Grid DataContext="{Binding Model,Source={StaticResource MainModelResover}}">
+        <DataGrid ItemsSource="{Binding AllBuildProcesses}" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="序号" Binding="{Binding BuildId}"></DataGridTextColumn>
+                <DataGridTextColumn Header="命令" Binding="{Binding Cmd}"></DataGridTextColumn>
+                <DataGridTextColumn Header="参数" Binding="{Binding Argument}"></DataGridTextColumn>
+                <DataGridTemplateColumn Header="操作">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="终止" Command="{Binding Model.SuspendCommand, Source={StaticResource MainModelResover}}" CommandParameter="{Binding}"></Button>
+                                <Button Content="显示" Command="{Binding Model.ShowProcess, Source={StaticResource MainModelResover}}" CommandParameter="{Binding}"></Button>
+                                <Button Content="隐藏" Command="{Binding Model.HideProcess, Source={StaticResource MainModelResover}}" CommandParameter="{Binding}"></Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
