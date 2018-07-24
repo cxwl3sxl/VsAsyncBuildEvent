@@ -8,17 +8,37 @@
         Title="VS异步命令管理器" Icon="main.ico" Loaded="MainWindow_OnLoaded" Height="280" Width="500" Closing="MainWindow_OnClosing" Closed="MainWindow_OnClosed">
     <Window.Resources>
         <local:MainModelResover x:Key="MainModelResover"></local:MainModelResover>
+        <Style TargetType="RadioButton">
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="Margin" Value="5 0"></Setter>
+        </Style>
     </Window.Resources>
     <Grid DataContext="{Binding Model,Source={StaticResource MainModelResover}}">
-        <DataGrid ItemsSource="{Binding AllBuildProcesses}" AutoGenerateColumns="False" IsReadOnly="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Margin="5">
+            <RadioButton IsChecked="{Binding RunImmediately}">立即运行</RadioButton>
+            <RadioButton Name="RadioButtonDelay" IsChecked="{Binding RunDelay}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="延时"></TextBlock>
+                    <TextBox IsEnabled="{Binding IsChecked,ElementName=RadioButtonDelay}" Text="{Binding Delay}" Width="50"></TextBox>
+                    <TextBlock VerticalAlignment="Center" Text="秒"></TextBlock>
+                </StackPanel>
+            </RadioButton>
+            <RadioButton IsChecked="{Binding RunManually}">手动模式</RadioButton>
+        </StackPanel>
+        <DataGrid Grid.Row="1" ItemsSource="{Binding AllBuildProcesses}" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="序号" Binding="{Binding BuildId}"></DataGridTextColumn>
+                <DataGridTextColumn Header="序号" Width="50" Binding="{Binding BuildId}"></DataGridTextColumn>
                 <DataGridTextColumn Header="命令" Binding="{Binding Cmd}"></DataGridTextColumn>
                 <DataGridTextColumn Header="参数" Binding="{Binding Argument}"></DataGridTextColumn>
                 <DataGridTemplateColumn Header="操作">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
+                                <Button Content="启动" Command="{Binding Model.StartCommand, Source={StaticResource MainModelResover}}" CommandParameter="{Binding}"></Button>
                                 <Button Content="终止" Command="{Binding Model.SuspendCommand, Source={StaticResource MainModelResover}}" CommandParameter="{Binding}"></Button>
                                 <Button Content="显示" Command="{Binding Model.ShowProcess, Source={StaticResource MainModelResover}}" CommandParameter="{Binding}"></Button>
                                 <Button Content="隐藏" Command="{Binding Model.HideProcess, Source={StaticResource MainModelResover}}" CommandParameter="{Binding}"></Button>
